@@ -29,7 +29,7 @@ INSERT INTO recipes (name, cook_time, rating) VALUES ('Mac and Cheese', 40, 5);
 Run this SQL file on the database to truncate (empty) the table, and insert the seed data. Be mindful of the fact any existing records in the table will be deleted.
 ```
 ```bash
-psql -h 127.0.0.1 recipes_directory_test < seeds_recipes.sql
+psql -h 127.0.0.1 recipes_directory_test < spec/seeds_recipes.sql
 ```
 3. Define the class names
 Usually, the Model class name will be the capitalised table name (single instead of plural). The same name is then suffixed by Repository for the Repository class name.
@@ -112,40 +112,34 @@ These examples will later be encoded as RSpec tests.
 # 1
 # Get all books
 
-repo = BookRepository.new
+repo = RecipeRepository.new
 
-books = repo.all
+recipes = repo.all
 
-books.length # =>  2
+recipes.length # =>  2
 
-books[0].id # =>  1
-books[0].title # =>  'Mrs Dalloway'
-books[0].author_name # =>  'Virginia Woolf'
+recipes[0].id # =>  1
+recipes[0].name # =>  'Soda Bread'
+recipes[0].cook_time # =>  55
+recipes[0].rating # =>  5
 
-books[1].id # =>  2
-books[1].title # =>  'Dracula'
-books[1].author_name # =>  'Bram Stoker'
+
+recipes[1].id # =>  2
+recipes[1].name # =>  'Mac and Cheese'
+recipes[1].cook_time # =>  40
+recipes[1].rating # =>  5
 
 # 2
 # Get a single book
 
-repo = BookRepository.new
+repo = RecipeRepository.new
 
-book = repo.find(1)
+recipe = repo.find(1)
 
-book.id # =>  1
-book.title # =>  'Mrs Dalloway'
-book.author_name # =>  'Virginia Woolf'
-
-# 3
-# Get a single book
-repo = BookRepository.new
-
-book = repo.find(2)
-
-book.id # =>  2
-book.title # =>  'Dracula'
-book.author_name # =>  'Bram Stoker'
+recipe.id # =>  1
+recipe.name # =>  'Soda Bread'
+recipe.cook_time # =>  55
+recipe.rating # =>  5
 
 7. Reload the SQL seeds before each test run
 Running the SQL code present in the seed file will empty the table and re-insert the seed data.
@@ -154,17 +148,17 @@ This is so you get a fresh table contents every time you run the test suite.
 
 # EXAMPLE
 
-# file: spec/book_repository_spec.rb
+# file: spec/recipe_repository_spec.rb
 
-def reset_books_table
-  seed_sql = File.read('spec/seeds_books.sql')
-  connection = PG.connect({ host: '127.0.0.1', dbname: 'book_store_test' })
+def reset_recipes_table
+  seed_sql = File.read('spec/seeds_recipes.sql')
+  connection = PG.connect({ host: '127.0.0.1', dbname: 'recipes_directory_test' })
   connection.exec(seed_sql)
 end
 
-describe BookRepository do
+describe RecipeRepository do
   before(:each) do 
-    reset_books_table
+    reset_recipes_table
   end
 
   # (your tests will go here).
